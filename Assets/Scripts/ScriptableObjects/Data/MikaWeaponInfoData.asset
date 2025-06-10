@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 528a2030a04774a419e42017db429fe6, type: 3}
+  m_Name: MikaWeaponInfoData
+  m_EditorClassIdentifier: 
+  Name: Quis ut Deus
+  Type: 0
+  MainColor:
+    serializedVersion: 2
+    rgba: 4294167039
+  Icon: {fileID: 21300000, guid: 81cf3f3469aaa7a4ab7c946df039a008, type: 3}
+  SpecialSkillIcon: {fileID: 21300000, guid: 70c0a32fbdc1d074784ac73f44b311d9, type: 3}
+  ExSkillIcon: {fileID: 21300000, guid: bd82bfa75f266fd41b451fd909687e3a, type: 3}
+  BaseAttackDistance: 50
+  BaseAttackDamage: 508
+  BaseMaxAmmo: 40
+  BaseCostResilience: 0.2
