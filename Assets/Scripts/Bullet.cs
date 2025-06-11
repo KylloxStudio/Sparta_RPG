@@ -45,9 +45,18 @@ public class Bullet : PoolObject
                 break;
             }
 
-            if (Physics.Raycast(_ray, out RaycastHit hit, _distance, _layerMask))
+            if (_owner.TryGetComponent(out Player player))
             {
-                CheckBulletRayHit(hit);
+                if (Physics.Raycast(player.Weapon.CheckAttackPoint.position, _ray.direction, out RaycastHit hit, 0.8f, _layerMask))
+                {
+                    CheckBulletRayHit(hit);
+                    break;
+                }
+            }
+
+            if (Physics.Raycast(_ray, out RaycastHit hit2, _distance, _layerMask))
+            {
+                CheckBulletRayHit(hit2);
                 break;
             }
 

@@ -13,6 +13,9 @@ public class Weapon : MonoBehaviour
     [SerializeField] private WeaponInfoData _infoData;
     public WeaponInfo Info { get; private set; }
 
+    [SerializeField] private Transform _checkAttackPoint;
+    public Transform CheckAttackPoint => _checkAttackPoint;
+
     [SerializeField] private Transform _bulletSpawnPoint;
     public Transform BulletSpawnPoint => _bulletSpawnPoint;
 
