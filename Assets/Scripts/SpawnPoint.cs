@@ -9,7 +9,7 @@ public class SpawnPoint : MonoBehaviour
 
     private void Update()
     {
-        int count = Physics.OverlapSphereNonAlloc(transform.position, 7.5f, _targets, LayerMask.GetMask("Character", "Character_Red", "Character_Blue"));
+        int count = Physics.OverlapSphereNonAlloc(transform.position, 7.5f, _targets, LayerMask.GetMask("Character", "Enemy"));
         if (count > 0)
         {
             IsUsingPoint = true;
