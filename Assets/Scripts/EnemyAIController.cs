@@ -25,7 +25,7 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
     public bool IsAttacking => CurState == State.Attack;
     public bool IsDead => CurState == State.Dead;
 
-    private bool _isAppear = false;
+    public bool IsAppearing { get; private set; }
 
     public enum State
     {
@@ -63,14 +63,15 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
 
     protected override IEnumerator OnInitialized()
     {
-        _isAppear = true;
+        IsAppearing = true;
 
         _animator.SetTrigger("doAppear");
         _agent.speed = _enemy.Stats.MoveSpeed;
 
+        yield return new WaitForSeconds(0.4f);
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
         CurState = State.Idle;
-        _isAppear = false;
+        IsAppearing = false;
 
         yield break;
     }
@@ -250,19 +251,24 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
 
     public void OnDamaged(GameObject attacker, int damage)
     {
-        if (_isAppear || IsDead)
+        if (IsAppearing || IsDead)
         {
             return;
         }
 
+        _enemy.Stats.Health -= damage;
         if (attacker.TryGetComponent(out Player player))
         {
             player.Stats.Cost += player.Weapon.Info.CostResilience;
         }
 
-        _enemy.Stats.Health -= damage;
         if (_enemy.Stats.Health <= 0)
         {
+            if (player != null)
+            {
+                player.Balance.AddPyroxenes(_enemy.Stats.RewardPyroxenes);
+            }
+
             EventDead();
             return;
         }
@@ -286,7 +292,7 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
     private IEnumerator OnDead()
     {
         _animator.SetTrigger("doDeath");
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.4f);
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
         _enemy.ReleaseObject();
         yield break;
