@@ -17,6 +17,8 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
         }
     }
 
+    protected T PrevState => _prevState;
+
     public bool IsInterrupted { get; set; }
     protected abstract T InvalidState { get; }
     protected abstract int StateEnumCount { get; }
@@ -75,7 +77,7 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
     }
 
-    protected virtual IEnumerator OnStart()
+    protected virtual IEnumerator OnInitialized()
     {
         yield break;
     }
@@ -96,19 +98,27 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
     private void Awake()
     {
-        _curState = InvalidState;
-        _prevState = InvalidState;
         DefineStates();
         OnAwake();
     }
 
-    private IEnumerator Start()
+    protected void Init()
     {
-        yield return StartCoroutine(OnStart());
+        _curState = InvalidState;
+        _prevState = InvalidState;
+
+        StartCoroutine(ProcessInit());
+    }
+
+    private IEnumerator ProcessInit()
+    {
+        yield return StartCoroutine(OnInitialized());
         while (!IsAIEnded())
         {
             IsInterrupted = false;
+
             yield return StartCoroutine(OnBeforeDoingState());
+
             StateElem state = _states.Get(CurState, null);
             if (state != null)
             {
@@ -124,6 +134,7 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
                     yield return StartCoroutine(state.Doing());
                 }
             }
+
             yield return StartCoroutine(OnAfterDoingState());
             yield return null;
         }

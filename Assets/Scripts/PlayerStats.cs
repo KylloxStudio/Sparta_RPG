@@ -66,6 +66,30 @@ public class PlayerStats
         }
     }
 
+    public float DefensePower
+    {
+        get
+        {
+            if (!_secureFloat.Exist("defense"))
+            {
+                Debug.LogError("Does not exist secureFloat: defense");
+                return -1f;
+            }
+
+            return _secureFloat["defense"];
+        }
+        set
+        {
+            if (!_secureFloat.Exist("defense"))
+            {
+                Debug.LogError("Does not exist secureFloat: defense");
+                return;
+            }
+
+            _secureFloat["defense"] = value;
+        }
+    }
+
     public float MoveSpeed
     {
         get
@@ -102,7 +126,7 @@ public class PlayerStats
 
             return _secureFloat["cost"];
         }
-        private set
+        set
         {
             if (!_secureFloat.Exist("cost"))
             {
@@ -110,18 +134,53 @@ public class PlayerStats
                 return;
             }
 
-            _secureFloat["cost"] = value;
+            if (value >= ExSkillCost)
+            {
+                _secureFloat["cost"] = ExSkillCost;
+            }
+            else if (value <= 0f)
+            {
+                _secureFloat["cost"] = 0f;
+            }
+            else
+            {
+                _secureFloat["cost"] = value;
+            }
         }
     }
 
-    public float ExsCost
+    public float SpecialSkillCooltime
+    {
+        get
+        {
+            if (!_secureFloat.Exist("specialCool"))
+            {
+                Debug.LogError("Does not exist secureFloat: specialCool");
+                return float.MaxValue;
+            }
+
+            return _secureFloat["specialCool"];
+        }
+        private set
+        {
+            if (!_secureFloat.Exist("specialCool"))
+            {
+                Debug.LogError("Does not exist secureFloat: specialCool");
+                return;
+            }
+
+            _secureFloat["specialCool"] = value;
+        }
+    }
+
+    public float ExSkillCost
     {
         get
         {
             if (!_secureFloat.Exist("exsCost"))
             {
                 Debug.LogError("Does not exist secureFloat: exsCost");
-                return -1f;
+                return float.MaxValue;
             }
 
             return _secureFloat["exsCost"];
@@ -146,14 +205,18 @@ public class PlayerStats
     {
         _secureInt.Add("hp");
         _secureInt.Add("maxHp");
+        _secureFloat.Add("defense");
         _secureFloat.Add("cost");
+        _secureFloat.Add("specialCool");
         _secureFloat.Add("exsCost");
         _secureFloat.Add("moveSpeed");
 
         MaxHealth = data.BaseMaxHealth;
         Health = MaxHealth;
+        DefensePower = data.BaseDefensePower;
         MoveSpeed = data.BaseMoveSpeed;
         Cost = 0f;
-        ExsCost = data.ExsCost;
+        SpecialSkillCooltime = data.SpecialSkillCooltime;
+        ExSkillCost = data.ExSkillCost;
     }
 }

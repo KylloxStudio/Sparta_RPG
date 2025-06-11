@@ -143,6 +143,30 @@ public class WeaponInfo
         }
     }
 
+    public float ReloadTime
+    {
+        get
+        {
+            if (!_secureFloat.Exist("reloadTime"))
+            {
+                Debug.LogError("Does not exist secureFloat: reloadTime");
+                return float.MaxValue;
+            }
+
+            return _secureFloat["reloadTime"];
+        }
+        set
+        {
+            if (!_secureFloat.Exist("reloadTime"))
+            {
+                Debug.LogError("Does not exist secureFloat: reloadTime");
+                return;
+            }
+
+            _secureFloat["reloadTime"] = value;
+        }
+    }
+
     public WeaponInfo()
     {
     }
@@ -154,6 +178,7 @@ public class WeaponInfo
         _secureInt.Add("curAmmo");
         _secureInt.Add("maxAmmo");
         _secureFloat.Add("costResilience");
+        _secureFloat.Add("reloadTime");
 
         Name = data.Name;
         Type = data.Type;
@@ -167,5 +192,6 @@ public class WeaponInfo
         MaxAmmo = data.BaseMaxAmmo;
         CurAmmo = MaxAmmo;
         CostResilience = data.BaseCostResilience;
+        ReloadTime = data.BaseReloadTime;
     }
 }

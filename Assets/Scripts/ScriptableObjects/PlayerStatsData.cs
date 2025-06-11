@@ -4,6 +4,8 @@
 public class PlayerStatsData : ScriptableObject
 {
     public int BaseMaxHealth;
+    public float BaseDefensePower;
     public float BaseMoveSpeed;
-    public float ExsCost;
+    public float SpecialSkillCooltime;
+    public float ExSkillCost;
 }

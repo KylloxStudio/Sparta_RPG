@@ -25,7 +25,9 @@ public class FieldOfView : MonoBehaviour
 
     private IEnumerator FindVisibleTargets()
     {
-        while (!Singleton<GameManager>.Instance().IsGameEnded)
+        yield return new WaitUntil(() => Singleton<InGameManager>.Instance().IsReadyToStart);
+
+        while (Singleton<GameManager>.Instance().IsInGame)
         {
             _visibleTargets.Clear();
             Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, _viewRadius, _targetLayer);

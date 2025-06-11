@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 950f7d616d4d82146aa0c18fcfb028d4, type: 3}
   m_Name: MikaStatsData
   m_EditorClassIdentifier: 
-  BaseMaxHealth: 275
+  BaseMaxHealth: 2000
+  BaseDefensePower: 14
   BaseMoveSpeed: 6.5
-  ExsCost: 6
+  SpecialSkillCooltime: 20
+  ExSkillCost: 6

@@ -33,9 +33,11 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Color _enableColor = new Color32(255, 255, 255, 255);
     [SerializeField] private Color _disableColor = new Color32(188, 188, 188, 128);
 
-    private void Start()
+    private IEnumerator Start()
     {
-        _player = Singleton<Player>.Instance();
+        yield return new WaitUntil(() => Singleton<InGameManager>.Instance().IsReadyToStart);
+
+        _player = Singleton<InGameManager>.Instance().LocalPlayer;
 
         _hpBar.value = 1f;
         _damagedEffectBar.value = 1f;
@@ -55,6 +57,8 @@ public class PlayerHUD : MonoBehaviour
         StartCoroutine(HandleCostBar());
         StartCoroutine(HandleSpecialSkill());
         StartCoroutine(HandleExSkill());
+
+        yield break;
     }
 
     private void UpdateAmmo(int cur, int max)
@@ -64,7 +68,7 @@ public class PlayerHUD : MonoBehaviour
 
     private IEnumerator HandleHpBar()
     {
-        while (!Singleton<GameManager>.Instance().IsGameEnded)
+        while (Singleton<GameManager>.Instance().IsInGame)
         {
             _hpText.text = _player.Stats.Health + " / " + _player.Stats.MaxHealth;
             _hpBar.value = Mathf.Lerp(_hpBar.value, (float)_player.Stats.Health / (float)_player.Stats.MaxHealth, Time.deltaTime * 10f);
@@ -91,9 +95,9 @@ public class PlayerHUD : MonoBehaviour
 
     private IEnumerator HandleCostBar()
     {
-        while (!Singleton<GameManager>.Instance().IsGameEnded)
+        while (Singleton<GameManager>.Instance().IsInGame)
         {
-            while (_player.Stats.Cost >= _player.Stats.ExsCost)
+            while (_player.Stats.Cost >= _player.Stats.ExSkillCost)
             {
                 _costBar.value = 1f;
                 _costBarFill.color = _filledCostBarColor;
@@ -102,7 +106,7 @@ public class PlayerHUD : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
             }
 
-            _costBar.value = Mathf.Lerp(_costBar.value, _player.Stats.Cost / _player.Stats.ExsCost, Time.deltaTime * 10f);
+            _costBar.value = Mathf.Lerp(_costBar.value, _player.Stats.Cost / _player.Stats.ExSkillCost, Time.deltaTime * 10f);
             _costBarFill.color = _defaultCostBarColor;
 
             yield return null;
@@ -113,27 +117,30 @@ public class PlayerHUD : MonoBehaviour
 
     private IEnumerator HandleSpecialSkill()
     {
-        _specialSkillKeyText.color = _disableColor;
-
-        while (_player.Controller.SpecialSkillTimer > 1.0f)
+        while (Singleton<GameManager>.Instance().IsInGame)
         {
-            _specialSkillIconMask.fillAmount = Mathf.Lerp(_specialSkillIconMask.fillAmount, (1.0f / _player.Controller.SpecialSkillTimer), Time.deltaTime * 10f);
-            _player.Controller.SpecialSkillTimer -= Time.deltaTime;
+            if (_player.Controller.IsSpecialSkillCooldown)
+            {
+                _specialSkillKeyText.color = _disableColor;
+            }
+            else
+            {
+                _specialSkillKeyText.color = _enableColor;
+            }
+
+            _specialSkillIconMask.fillAmount = Mathf.Lerp(_specialSkillIconMask.fillAmount, _player.Controller.SpecialSkillTimer / _player.Stats.SpecialSkillCooltime, Time.deltaTime * 10f);
 
             yield return null;
         }
-
-        _specialSkillIconMask.fillAmount = 1f;
-        _specialSkillKeyText.color = _enableColor;
 
         yield break;
     }
 
     private IEnumerator HandleExSkill()
     {
-        while (!Singleton<GameManager>.Instance().IsGameEnded)
+        while (Singleton<GameManager>.Instance().IsInGame)
         {
-            if (_player.Stats.Cost >= _player.Stats.ExsCost)
+            if (_player.Stats.Cost >= _player.Stats.ExSkillCost)
             {
                 _exSkillIcon.color = _enableColor;
                 _exSkillKeyText.color = _enableColor;

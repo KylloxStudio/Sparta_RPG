@@ -14,4 +14,5 @@ public class WeaponInfoData : ScriptableObject
     public float BaseAttackDamage;
     public int BaseMaxAmmo;
     public float BaseCostResilience;
+    public float BaseReloadTime;
 }
