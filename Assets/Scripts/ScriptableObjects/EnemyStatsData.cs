@@ -8,4 +8,5 @@ public class EnemyStatsData : ScriptableObject
     public float BaseAttackDistance;
     public float BaseAttackDamage;
     public float BaseMoveSpeed;
+    public int RewardPyroxenes;
 }

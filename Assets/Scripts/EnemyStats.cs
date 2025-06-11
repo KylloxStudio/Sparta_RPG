@@ -162,6 +162,30 @@ public class EnemyStats
         }
     }
 
+    public int RewardPyroxenes
+    {
+        get
+        {
+            if (!_secureInt.Exist("pyroxenes"))
+            {
+                Debug.LogError("Does not exist secureInt: pyroxenes");
+                return -1;
+            }
+
+            return _secureInt["pyroxenes"];
+        }
+        set
+        {
+            if (!_secureInt.Exist("pyroxenes"))
+            {
+                Debug.LogError("Does not exist secureInt: pyroxenes");
+                return;
+            }
+
+            _secureInt["pyroxenes"] = value;
+        }
+    }
+
     public EnemyStats()
     {
     }
@@ -174,6 +198,7 @@ public class EnemyStats
         _secureFloat.Add("attackDistance");
         _secureFloat.Add("attackDamage");
         _secureFloat.Add("moveSpeed");
+        _secureInt.Add("pyroxenes");
 
         MaxHealth = data.BaseMaxHealth;
         Health = MaxHealth;
@@ -181,5 +206,6 @@ public class EnemyStats
         AttackDistance = data.BaseAttackDistance;
         AttackDamage = data.BaseAttackDamage;
         MoveSpeed = data.BaseMoveSpeed;
+        RewardPyroxenes = UnityEngine.Random.Range(data.RewardPyroxenes, int.MaxValue);
     }
 }

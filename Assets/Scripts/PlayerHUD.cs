@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Image _costBarFill;
     [SerializeField] private Color _defaultCostBarColor = new Color32(40, 150, 255, 255);
     [SerializeField] private Color _filledCostBarColor = new Color32(241, 26, 26, 255);
+
+    [SerializeField] private TextMeshProUGUI _balanceCountText;
 
     [SerializeField] private TextMeshProUGUI _weaponNameText;
     [SerializeField] private Image _weaponIcon;
@@ -43,6 +46,8 @@ public class PlayerHUD : MonoBehaviour
         _damagedEffectBar.value = 1f;
         _costBar.value = 0f;
 
+        _player.Balance.OnBalanceUpdated.AddListener(UpdateBalance);
+
         _player.Weapon.OnAmmoEvent.AddListener(UpdateAmmo);
         _weaponNameText.color = _player.Weapon.Info.MainColor;
         _weaponNameText.text = _player.Weapon.Info.Name;
@@ -64,6 +69,11 @@ public class PlayerHUD : MonoBehaviour
     private void UpdateAmmo(int cur, int max)
     {
         _weaponAmmoText.text = $"{cur} / {max}";
+    }
+
+    private void UpdateBalance(BigInteger prev, BigInteger cur, bool format)
+    {
+        _balanceCountText.text = format ? cur.Format() : cur.ToString("N0");
     }
 
     private IEnumerator HandleHpBar()

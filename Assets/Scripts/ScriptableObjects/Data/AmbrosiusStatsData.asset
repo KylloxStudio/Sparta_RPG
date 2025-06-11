@@ -17,3 +17,4 @@ MonoBehaviour:
   BaseAttackDistance: 6.66
   BaseAttackDamage: 66.6
   BaseMoveSpeed: 2.5
+  RewardPyroxenes: 1234567
