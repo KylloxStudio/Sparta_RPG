@@ -27,8 +27,6 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     public bool IsUsingExSkill => CurState == State.ExSkill;
     public bool IsDead => CurState == State.Dead;
 
-    private float _stoppingDistance;
-
     public enum State
     {
         Invalid = -1,
@@ -213,6 +211,9 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
             {
                 CurState = State.Attack;
             }
+
+            RotateTo(Vector3.Scale(Target.transform.position - transform.position, new Vector3(1f, 0f, 1f)));
+            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.Euler(25f, transform.forward.y, transform.forward.z));
         }
 
         yield return new WaitForSeconds(0.1f);
@@ -366,7 +367,7 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     {
         if (IsUsingSpecialSkill)
         {
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.4f);
             yield return new WaitForSeconds(_player.Animation.Animator.GetCurrentAnimatorStateInfo(0).length);
         }
 
@@ -408,7 +409,7 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     {
         if (IsUsingExSkill)
         {
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.4f);
             yield return new WaitForSeconds(_player.Animation.Animator.GetCurrentAnimatorStateInfo(0).length);
         }
 
