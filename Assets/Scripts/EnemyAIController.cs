@@ -25,6 +25,8 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
     public bool IsAttacking => CurState == State.Attack;
     public bool IsDead => CurState == State.Dead;
 
+    private bool _isAppear = false;
+
     public enum State
     {
         Invalid = -1,
@@ -61,11 +63,14 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
 
     protected override IEnumerator OnInitialized()
     {
+        _isAppear = true;
+
         _animator.SetTrigger("doAppear");
         _agent.speed = _enemy.Stats.MoveSpeed;
 
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
         CurState = State.Idle;
+        _isAppear = false;
 
         yield break;
     }
@@ -245,7 +250,7 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
 
     public void OnDamaged(GameObject attacker, int damage)
     {
-        if (IsDead)
+        if (_isAppear || IsDead)
         {
             return;
         }
