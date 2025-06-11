@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
 
     public PlayerStats Stats { get; private set; }
     public PlayerAIController Controller { get; private set; }
+    public PlayerBalance Balance { get; private set; }
     public PlayerAnimation Animation { get; private set; }
     public Weapon Weapon { get; private set; }
 
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
 
         Stats = new PlayerStats(_statsData);
         Controller = GetComponent<PlayerAIController>();
+        Balance = GetComponent<PlayerBalance>();
         Animation = GetComponentInChildren<PlayerAnimation>();
         Weapon = GetComponentInChildren<Weapon>();
     }

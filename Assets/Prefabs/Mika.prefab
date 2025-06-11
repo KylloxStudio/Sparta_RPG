@@ -562,7 +562,7 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
-  _ignoreObstacle: 1
+  _ignoreObstacle: 0
 --- !u!195 &4999193964005480405
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1002,7 +1002,7 @@ Transform:
   m_GameObject: {fileID: 4411507468547008585}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.05, z: 0.6}
+  m_LocalPosition: {x: 0.069, y: 0.841, z: 0.213}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

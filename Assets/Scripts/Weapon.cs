@@ -69,7 +69,7 @@ public class Weapon : MonoBehaviour
 
                     Bullet bullet = Singleton<ObjectPoolManager>.Instance().Get("Bullet").GetComponent<Bullet>();
                     bullet.transform.SetPositionAndRotation(_bulletSpawnPoint.position, _bulletSpawnPoint.rotation);
-                    bullet.Initialize(_player.gameObject, ray, Info.AttackDamage, ignoreDefense: _player.UnitCode == UnitCode.Mika);
+                    bullet.Initialize(_player.gameObject, ray, LayerMask.GetMask("Enemy", "Structure"), Info.AttackDamage, ignoreDefense: _player.UnitCode == UnitCode.Mika);
 
                     GameObject muzzleFlash = Singleton<ObjectPoolManager>.Instance().Get("MuzzleFlash");
                     muzzleFlash.transform.SetPositionAndRotation(_bulletSpawnPoint.position, _bulletSpawnPoint.rotation);
@@ -84,7 +84,7 @@ public class Weapon : MonoBehaviour
 
                         Bullet bullet = Singleton<ObjectPoolManager>.Instance().Get("Bullet").GetComponent<Bullet>();
                         bullet.transform.SetPositionAndRotation(_bulletSpawnPoint.position, _bulletSpawnPoint.rotation);
-                        bullet.Initialize(_player.gameObject, ray, Info.AttackDamage / 12f, ignoreDefense: _player.UnitCode == UnitCode.Mika);
+                        bullet.Initialize(_player.gameObject, ray, LayerMask.GetMask("Enemy", "Structure"), Info.AttackDamage / 12f, ignoreDefense: _player.UnitCode == UnitCode.Mika);
 
                         GameObject muzzleFlash = Singleton<ObjectPoolManager>.Instance().Get("MuzzleFlash");
                         muzzleFlash.transform.SetPositionAndRotation(_bulletSpawnPoint.position, _bulletSpawnPoint.rotation);

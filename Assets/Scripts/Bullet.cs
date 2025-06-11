@@ -9,16 +9,17 @@ public class Bullet : PoolObject
 
     private Ray _ray;
     [SerializeField] private float _distance;
-    [SerializeField] private LayerMask _layerMask;
+    private int _layerMask;
 
     private float _attackDamage;
     private bool _ignoreDefense;
 
-    public void Initialize(GameObject owner, Ray ray, float attackDamage, bool ignoreDefense = false)
+    public void Initialize(GameObject owner, Ray ray, int layerMask, float attackDamage, bool ignoreDefense = false)
     {
         _owner = owner;
 
         _ray = ray;
+        _layerMask = layerMask;
 
         _attackDamage = attackDamage;
         _ignoreDefense = ignoreDefense;
@@ -44,7 +45,7 @@ public class Bullet : PoolObject
                 break;
             }
 
-            if (Physics.Raycast(_ray, out RaycastHit hit, _distance, _layerMask.value))
+            if (Physics.Raycast(_ray, out RaycastHit hit, _distance, _layerMask))
             {
                 CheckBulletRayHit(hit);
                 break;

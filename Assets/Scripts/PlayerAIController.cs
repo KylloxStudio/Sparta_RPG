@@ -27,6 +27,8 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     public bool IsUsingExSkill => CurState == State.ExSkill;
     public bool IsDead => CurState == State.Dead;
 
+    private float _stoppingDistance;
+
     public enum State
     {
         Invalid = -1,
@@ -66,6 +68,7 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     protected override IEnumerator OnInitialized()
     {
         _agent.speed = _player.Stats.MoveSpeed;
+        _agent.stoppingDistance = _player.Weapon.Info.AttackDistance * 0.94f;
 
         CurState = State.Idle;
         yield break;
@@ -175,13 +178,13 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     {
         while (CurState == State.Idle)
         {
-            if (_fieldOfView.VisibleTargets.Length > 0)
+            if (_fieldOfView.Targets.Length > 0)
             {
                 CurState = State.Normal;
             }
 
-            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.Euler(25f, 0f, 0f));
             RotateTo(Vector3.Scale(Singleton<CameraManager>.Instance().MainCamera.transform.forward, new Vector3(1f, 0f, 1f)));
+            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.Euler(25f, transform.forward.y, transform.forward.z));
 
             yield return null;
         }
@@ -191,9 +194,9 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
 
     private IEnumerator NormalDoing()
     {
-        if (_fieldOfView.VisibleTargets.Length > 0)
+        if (_fieldOfView.Targets.Length > 0)
         {
-            Enemy[] enemies = _fieldOfView.VisibleTargets.Select(o => o.GetComponent<Enemy>()).ToArray();
+            Enemy[] enemies = _fieldOfView.Targets.Select(o => o.GetComponent<Enemy>()).ToArray();
             Target = Singleton<InGameManager>.Instance().GetNearestEnemy(enemies);
 
             if (Target == null)
@@ -206,7 +209,7 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
             {
                 CurState = State.Chase;
             }
-            else
+            else if (!Target.Controller.IsAppearing)
             {
                 CurState = State.Attack;
             }
@@ -219,8 +222,6 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
     void ChaseEntered()
     {
         _agent.isStopped = false;
-        _agent.SetDestination(Target.transform.position);
-
         _player.Animation.Animator.SetBool("isMoving", true);
     }
 
@@ -234,13 +235,17 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
             }
 
             float distance = Vector3.Distance(transform.position, Target.transform.position);
-            if (distance <= _player.Weapon.Info.AttackDistance)
+            if (distance <= _agent.stoppingDistance)
             {
                 CurState = State.Attack;
             }
+            else
+            {
+                _agent.SetDestination(Target.transform.position);
+            }
 
-            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.Euler(25f, 0f, 0f));
             RotateTo(Vector3.Scale(Target.transform.position - transform.position, new Vector3(1f, 0f, 1f)));
+            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.Euler(25f, transform.forward.y, transform.forward.z));
 
             yield return null;
         }
@@ -257,17 +262,24 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
 
     private void AttackEntered()
     {
+        _agent.stoppingDistance = _player.Weapon.Info.AttackDistance * 0.94f;
         _player.Animation.SetLayerWeight("Attack Layer", 0.9f, 50f);
         _player.Animation.Animator.SetBool("isShooting", true);
     }
 
     private IEnumerator AttackDoing()
     {
-        while (Target != null && !Target.Controller.IsDead)
+        while (Target != null && !Target.Controller.IsAppearing && !Target.Controller.IsDead)
         {
             if (IsInterrupted)
             {
                 yield break;
+            }
+
+            if (_fieldOfView.VisibleTargets.Length <= 0)
+            {
+                _agent.stoppingDistance = 3.5f;
+                CurState = State.Chase;
             }
 
             float distance = Vector3.Distance(transform.position, Target.transform.position);
