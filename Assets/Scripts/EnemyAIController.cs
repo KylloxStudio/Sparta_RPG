@@ -295,6 +295,7 @@ public class EnemyAIController : StateBasedAI<EnemyAIController.State>
         yield return new WaitForSeconds(0.4f);
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
         _enemy.ReleaseObject();
+        Singleton<SpawnManager>.Instance().SpawnedObjects.Remove(_enemy.gameObject);
         yield break;
     }
 

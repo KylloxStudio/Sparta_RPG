@@ -245,8 +245,9 @@ public class PlayerAIController : StateBasedAI<PlayerAIController.State>
                 _agent.SetDestination(Target.transform.position);
             }
 
-            RotateTo(Vector3.Scale(Target.transform.position - transform.position, new Vector3(1f, 0f, 1f)));
-            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.Euler(25f, transform.forward.y, transform.forward.z));
+            Vector3 targetDir = (Target.transform.position - transform.position).normalized;
+            RotateTo(Vector3.Scale(targetDir, new Vector3(1f, 0f, 1f)));
+            Singleton<CameraManager>.Instance().SetCameraLookRotation(Quaternion.LookRotation(targetDir).Change(x: 25f));
 
             yield return null;
         }
