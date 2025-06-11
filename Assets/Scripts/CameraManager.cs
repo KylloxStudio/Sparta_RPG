@@ -16,8 +16,8 @@ public class CameraManager : Singleton<CameraManager>
 
     private void Start()
     {
-        VirtualCamera.Follow = Singleton<Player>.Instance().CameraLookPoint;
-        VirtualCamera.LookAt = Singleton<Player>.Instance().CameraLookPoint;
+        VirtualCamera.Follow = Singleton<InGameManager>.Instance().LocalPlayer.CameraLookPoint;
+        VirtualCamera.LookAt = Singleton<InGameManager>.Instance().LocalPlayer.CameraLookPoint;
     }
 
     public void ShakeCamera(float intensity, float time)
@@ -35,5 +35,11 @@ public class CameraManager : Singleton<CameraManager>
         multiChannelPerlin.m_AmplitudeGain = 0f;
 
         yield break;
+    }
+
+    public void SetCameraLookRotation(Quaternion rot)
+    {
+        Quaternion curRot = Singleton<InGameManager>.Instance().LocalPlayer.CameraLookPoint.transform.rotation;
+        Singleton<InGameManager>.Instance().LocalPlayer.CameraLookPoint.transform.rotation = Quaternion.Slerp(curRot, rot, Time.deltaTime * 5f);
     }
 }
